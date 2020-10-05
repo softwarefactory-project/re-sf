@@ -1,29 +1,5 @@
 type decoder('item) = Js.Json.t => 'item;
 
-let example = {|
-{
-  "contacts": [
-    "harrymichal@seznam.cz"
-  ],
-  "description": "Unprivileged development environment",
-  "tenant": "local",
-  "website": "https://github.com/debarshiray/toolbox",
-  "name": "toolbox",
-  "source-repositories": [
-    {
-      "containers/toolbox": {
-        "connection": "github.com",
-        "zuul/exclude-unprotected-branches": true
-      }
-    },
-    "software-factory/cauth",
-    {
-      "software-factory/managesf": {}
-    }
-  ]
-}
-|};
-
 // Do not handle other potential fields as not needed for our main usage
 type sourceRepository = {
   name: string,
@@ -31,7 +7,7 @@ type sourceRepository = {
 };
 
 type project = {
-  name: option(string),
+  name: string,
   description: string,
   tenant: option(string),
   connection: option(string),
@@ -67,9 +43,9 @@ let decodeSourceRepository: decoder(sourceRepository) =
     };
   };
 
-let parseProject = json => {
+let parse = json => {
   Json.Decode.{
-    name: json |> optional(field("name", string)),
+    name: json |> field("name", string),
     description: json |> field("description", string),
     tenant: json |> optional(field("tenant", string)),
     connection: json |> optional(field("connection", string)),
@@ -83,11 +59,4 @@ let parseProject = json => {
       json |> field("source-repositories", list(decodeSourceRepository)),
     options: json |> optional(field("options", list(string))),
   };
-};
-
-let runExample = () => {
-  Js.log("Running project example");
-  let json = Json.parseOrRaise(example);
-  let project = parseProject(json);
-  Js.log(project);
 };
