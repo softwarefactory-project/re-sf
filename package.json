@@ -1,0 +1,35 @@
+{
+  "name": "@softwarefactory-project/re-sf",
+  "version": "0.1.0",
+  "description": "ReasonML parser for SF Resources",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/softwarefactory-project/re-patternfly.git"
+  },
+  "keywords": [
+    "Software-Factory",
+    "BuckleScript"
+  ],
+  "author": "softwarefactory-dev@redhat.com",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "bs-platform": "^8.2.0"
+  },
+  "bugs": {
+    "url": "https://github.com/softwarefactory-project/re-sf/issues"
+  },
+  "homepage": "https://github.com/softwarefactory-project/re-sf#readme",
+  "files": [
+    "src/*.re",
+    "bsconfig.json"
+  ],
+  "dependencies": {
+    "@glennsl/bs-json": "^5.0.2",
+    "bs-platform": "^8.2.0"
+  }
+}
