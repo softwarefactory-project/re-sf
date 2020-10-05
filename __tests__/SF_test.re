@@ -42,7 +42,7 @@ describe("Test resources JSON parsing", () => {
       |};
       let expected = {
         base_url: Some("https://pagure.io"),
-        connection_type: "pagure",
+        connection_type: PAGURE,
         name: "pagure.io",
       };
       let parsed = Connection.parse(Json.parseOrRaise(json));

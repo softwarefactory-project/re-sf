@@ -3,15 +3,40 @@
 
 var Json_decode = require("@glennsl/bs-json/src/Json_decode.bs.js");
 
+function parseConnectionType(json) {
+  var match = Json_decode.string(json);
+  switch (match) {
+    case "gerrit" :
+        return /* GERRIT */2;
+    case "git" :
+        return /* GIT */0;
+    case "github" :
+        return /* GITHUB */4;
+    case "pagure" :
+        return /* PAGURE */1;
+    default:
+      throw {
+            RE_EXN_ID: "Match_failure",
+            _1: [
+              "Connection.re",
+              14,
+              51
+            ],
+            Error: new Error()
+          };
+  }
+}
+
 function parse(json) {
   return {
           name: Json_decode.field("name", Json_decode.string, json),
-          connection_type: Json_decode.field("type", Json_decode.string, json),
+          connection_type: Json_decode.field("type", parseConnectionType, json),
           base_url: Json_decode.optional((function (param) {
                   return Json_decode.field("base-url", Json_decode.string, param);
                 }), json)
         };
 }
 
+exports.parseConnectionType = parseConnectionType;
 exports.parse = parse;
 /* No side effect */
