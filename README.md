@@ -8,7 +8,7 @@ ReasonML JSON parser for [Software-Factory][Software-Factory] resources.
 Add to your `package.json`:
 
 ```
-npm install @softwarefactory-project/re-sf
+yarn install @softwarefactory-project/re-sf
 ```
 
 Add to your `bsconfig.json`:
@@ -17,6 +17,12 @@ Add to your `bsconfig.json`:
 "bs-dependencies": [
 +  "@softwarefactory-project/re-sf"
 ]
+```
+
+## Run re-sf tests
+
+```bash
+yarn test
 ```
 
 [Software-Factory]: https://softwarefactory-project.io/docs/

@@ -2,7 +2,6 @@
 .merlin
 .bsb.lock
 *.bs.js
-npm-debug.log
-package-lock.json
+yarn.lock
 /lib/bs/
 /node_modules/
