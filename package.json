@@ -6,12 +6,9 @@
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world",
-    "test": "npm run build && jest --verbose --testMatch **/tests/*.bs.js"
+    "test": "yarn run build && jest --verbose --testMatch **/tests/*.bs.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/softwarefactory-project/re-patternfly.git"
-  },
+  "repository": "git+https://github.com/softwarefactory-project/re-patternfly.git",
   "keywords": [
     "Software-Factory",
     "BuckleScript"
@@ -20,8 +17,8 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.5.1",
-    "jest": "^26.5.0",
-    "bs-platform": "^8.2.0"
+    "bs-platform": "^8.2.0",
+    "jest": "^26.5.0"
   },
   "bugs": {
     "url": "https://github.com/softwarefactory-project/re-sf/issues"
@@ -34,5 +31,6 @@
   "dependencies": {
     "@glennsl/bs-json": "^5.0.2",
     "bs-platform": "^8.2.0"
-  }
+  },
+  "main": "index.js"
 }
