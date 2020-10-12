@@ -15,12 +15,13 @@ describe("Test resources JSON parsing", () => {
           "name": "rdoproject.org"
         }
       |};
-      let expected = Tenant.{
-        name: "rdoproject.org",
-        default_connection: Some("rdoproject.org"),
-        description: Some("The rdoproject.org tenant"),
-        url: "https://review.rdoproject.org/manage",
-      };
+      let expected =
+        Tenant.{
+          name: "rdoproject.org",
+          default_connection: Some("rdoproject.org"),
+          description: Some("The rdoproject.org tenant"),
+          url: "https://review.rdoproject.org/manage",
+        };
 
       let tenant = Tenant.parse(Json.parseOrRaise(json));
       expect(tenant.name) |> toBe(expected.name);
@@ -36,61 +37,77 @@ describe("Test resources JSON parsing", () => {
           "name": "pagure.io"
         }
       |};
-      let expected = Connection.{
-        base_url: Some("https://pagure.io"),
-        connection_type: PAGURE,
-        name: "pagure.io",
-      };
+      let expected =
+        Connection.{
+          base_url: Some("https://pagure.io"),
+          connection_type: PAGURE,
+          name: "pagure.io",
+        };
       let parsed = Connection.parse(Json.parseOrRaise(json));
       expect(parsed.name) |> toBe(expected.name);
     })
   );
 
+  let projectJson = {|
+    {
+      "contacts": [
+        "harrymichal@seznam.cz"
+      ],
+      "description": "Unprivileged development environment",
+      "tenant": "local",
+      "website": "https://github.com/debarshiray/toolbox",
+      "name": "toolbox",
+      "source-repositories": [
+        {
+          "containers/toolbox": {
+            "connection": "github.com",
+            "zuul/exclude-unprotected-branches": true
+          }
+        },
+        "software-factory/cauth",
+        {
+          "software-factory/managesf": {}
+        }
+      ]
+    }
+  |};
   Expect.(
     test("parse project object", () => {
-      let json = {|
-        {
-          "contacts": [
-            "harrymichal@seznam.cz"
+      let expected =
+        Project.{
+          name: "toolbox",
+          contacts: Some(["harrymichal@seznam.cz"]),
+          description: "Unprivileged development environment",
+          tenant: Some("local"),
+          website: Some("https://github.com/debarshiray/toolbox"),
+          issue_tracker_url: None,
+          review_dashboard: None,
+          mailing_lists: Some([]),
+          connection: None,
+          documentation: None,
+          options: Some([]),
+          source_repositories: [
+            {name: "containers/toolbox", connection: Some("github.com")},
+            {name: "software-factory/cauth", connection: None},
+            {name: "software-factory/managesf", connection: None},
           ],
-          "description": "Unprivileged development environment",
-          "tenant": "local",
-          "website": "https://github.com/debarshiray/toolbox",
-          "name": "toolbox",
-          "source-repositories": [
-            {
-              "containers/toolbox": {
-                "connection": "github.com",
-                "zuul/exclude-unprotected-branches": true
-              }
-            },
-            "software-factory/cauth",
-            {
-              "software-factory/managesf": {}
-            }
-          ]
-        }
-      |};
-      let expected = Project.{
-        name: "toolbox",
-        contacts: Some(["harrymichal@seznam.cz"]),
-        description: "Unprivileged development environment",
-        tenant: Some("local"),
-        website: Some("https://github.com/debarshiray/toolbox"),
-        issue_tracker_url: None,
-        review_dashboard: None,
-        mailing_lists: Some([]),
-        connection: None,
-        documentation: None,
-        options: Some([]),
-        source_repositories: [
-          {name: "containers/toolbox", connection: Some("github.com")},
-          {name: "software-factory/cauth", connection: None},
-          {name: "software-factory/managesf", connection: None},
-        ],
-      };
-      let parsed = Project.parse(Json.parseOrRaise(json));
+        };
+      let parsed = Project.parse(Json.parseOrRaise(projectJson));
       expect(parsed.name) |> toBe(expected.name);
+    })
+  );
+  Expect.(
+    test("filter project by tenant", () => {
+      let parsed = Project.parse(Json.parseOrRaise(projectJson));
+      expect((
+        [parsed]
+        |> Project.filterProjectsByTenant("local")
+        |> Belt.List.length,
+        [parsed]
+        |> Project.filterProjectsByTenant("alternate")
+        |> Belt.List.length,
+      ))
+      |> toEqual((1, 0));
     })
   );
   Expect.(

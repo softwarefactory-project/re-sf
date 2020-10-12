@@ -60,3 +60,12 @@ let parse = json => {
     options: json |> optional(field("options", list(string))),
   };
 };
+
+let filterProjectsByTenant = (tenant: string, projects: list(project)) => {
+  let isProjectTenant = (tenant: string, ptenant: string): bool => {
+    tenant == ptenant;
+  };
+  Belt.List.keep(projects, project =>
+    Belt.Option.eq(Some(tenant), project.tenant, isProjectTenant)
+  );
+};
