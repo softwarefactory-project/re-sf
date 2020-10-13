@@ -61,11 +61,9 @@ let parse = json => {
   };
 };
 
+/* optionEq compares an optional value `x` with a value `y` using the (==) operator */
+let optionEq = (x: option('t), y: 't) => Belt.Option.eq(x, Some(y), (==))
+
 let filterProjectsByTenant = (tenant: string, projects: list(project)) => {
-  let isProjectTenant = (tenant: string, ptenant: string): bool => {
-    tenant == ptenant;
-  };
-  Belt.List.keep(projects, project =>
-    Belt.Option.eq(Some(tenant), project.tenant, isProjectTenant)
-  );
+  projects->Belt.List.keep(project => project.tenant->optionEq(tenant));
 };

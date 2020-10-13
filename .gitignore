@@ -3,5 +3,5 @@
 .bsb.lock
 *.bs.js
 yarn.lock
-/lib/bs/
+/lib/
 /node_modules/
