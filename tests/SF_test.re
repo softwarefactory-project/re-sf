@@ -87,9 +87,21 @@ describe("Test resources JSON parsing", () => {
           documentation: None,
           options: Some([]),
           source_repositories: [
-            {name: "containers/toolbox", connection: Some("github.com")},
-            {name: "software-factory/cauth", connection: None},
-            {name: "software-factory/managesf", connection: None},
+            {
+              name: "containers/toolbox",
+              connection: Some("github.com"),
+              description: None,
+            },
+            {
+              name: "software-factory/cauth",
+              connection: None,
+              description: None,
+            },
+            {
+              name: "software-factory/managesf",
+              connection: None,
+              description: None,
+            },
           ],
         };
       let parsed = Project.parse(Json.parseOrRaise(projectJson));

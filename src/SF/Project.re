@@ -4,6 +4,9 @@ type decoder('item) = Js.Json.t => 'item;
 type sourceRepository = {
   name: string,
   connection: option(string),
+  // This is not provided by the resource schema yet, we use it as a place
+  // holder to lift repo description into the project schema.
+  description: option(string),
 };
 
 type project = {
@@ -25,6 +28,7 @@ let decodeSourceRepositoryDict = (name: Js.Dict.key, json: Js.Json.t) => {
   Json.Decode.{
     name,
     connection: json |> optional(field("connection", string)),
+    description: None,
   };
 };
 
@@ -39,7 +43,8 @@ let decodeSourceRepository: decoder(sourceRepository) =
         "SourceRepository dictionary can only contain one value"
         |> Util.decodeFail
       }
-    | None => Json.Decode.{name: json |> string, connection: None}
+    | None =>
+      Json.Decode.{name: json |> string, connection: None, description: None}
     };
   };
 
