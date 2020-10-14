@@ -2,6 +2,7 @@ type resources = {
   projects: list(Project.project),
   connections: list(Connection.connection),
   tenants: list(Tenant.tenant),
+  repos: list(Repo.repo),
 };
 type top = {resources};
 
@@ -19,7 +20,8 @@ let parseResources = (json: Js.Json.t): resources => {
     tenants: json |> field("tenants", decodeRObjects(Tenant.parse)),
     projects: json |> field("projects", decodeRObjects(Project.parse)),
     connections:
-      json |> field("connections", decodeRObjects(Connection.parse)),
+    json |> field("connections", decodeRObjects(Connection.parse)),
+    repos: json |> field("repos", Repo.parse)
   };
 };
 

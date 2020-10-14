@@ -1,0 +1,33 @@
+{
+  "resources": {
+    "tenants": {
+      "rdoproject.org": {
+        "default-connection": "rdoproject.org",
+        "description": "The rdoproject.org tenant",
+        "url": "https://review.rdoproject.org/manage",
+        "name": "rdoproject.org"
+      }
+    },
+    "connections": {
+      "github.com": {
+        "base-url": "https://github.com",
+        "type": "github",
+        "name": "github.com"
+      }
+    },
+    "projects": {
+      "toolbox": {
+        "description": "Unprivileged development environment",
+        "tenant": "local",
+        "name": "toolbox",
+        "source-repositories": []
+      }
+    },
+    "repos": {
+      "test/project-distgit": {
+        "acl": "sf-acl",
+        "description": "a test project"
+      }
+    }
+  }
+}

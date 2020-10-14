@@ -1,0 +1,6 @@
+{
+  "test/project-distgit": {
+    "acl": "sf-acl",
+    "description": "a test project"
+  }
+}
