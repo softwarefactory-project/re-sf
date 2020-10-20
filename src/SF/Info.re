@@ -2,6 +2,9 @@
 type info = {
   services: list(service),
   version: string,
+  header_logo_b64data: string,
+  favicon_b64data: string,
+  splash_image_b64data: string
 }
 and service = {
   name: string,
@@ -17,5 +20,8 @@ let parseService = (json): service =>
 let parse = (json): info =>
   Json.Decode.{
     version: json |> field("version", string),
+    header_logo_b64data: json |> field("header_logo_b64data", string),
+    favicon_b64data: json |> field("favicon_b64data", string),
+    splash_image_b64data: json |> field("splash_image_b64data", string),
     services: json |> field("services", list(parseService)),
   };
