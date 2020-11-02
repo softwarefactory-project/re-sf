@@ -77,7 +77,7 @@ describe("Test resources JSON parsing", () => {
   test("parse project object", () => {
     let expected =
       Project.{
-        name: "toolbox",
+        name: Some("toolbox"),
         contacts: Some(["harrymichal@seznam.cz"]),
         description: "Unprivileged development environment",
         tenant: Some("local"),
@@ -129,7 +129,7 @@ describe("Test resources JSON parsing", () => {
   let parsed = Resources.parse(readJson("resources.json"));
   test("parse resources object", () => {
     let isToolbox = (project: Project.project): bool =>
-      project.name == "toolbox";
+      project.name == Some("toolbox");
     let maybeToolbox =
       parsed.resources.projects->Belt.List.keep(isToolbox)->Belt.List.get(0);
     let my_assert =

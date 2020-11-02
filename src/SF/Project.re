@@ -10,7 +10,7 @@ type sourceRepository = {
 };
 
 type project = {
-  name: string,
+  name: option(string),
   description: string,
   tenant: option(string),
   connection: option(string),
@@ -50,7 +50,7 @@ let decodeSourceRepository: decoder(sourceRepository) =
 
 let parse = json => {
   Json.Decode.{
-    name: json |> field("name", string),
+    name: json |> optional(field("name", string)),
     description: json |> field("description", string),
     tenant: json |> optional(field("tenant", string)),
     connection: json |> optional(field("connection", string)),
