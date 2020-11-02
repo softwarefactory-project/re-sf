@@ -1,12 +1,14 @@
 open Jest;
+open Expect;
 
 let read = fn => Node.Fs.readFileSync("tests/fixtures/" ++ fn, `utf8);
-
-let readJson = fn => fn->read->Json.parseOrRaise;
+let parse = (json, decoder) => {
+  let v = decoder(Js.Json.parseExn(json));
+  Belt.Result.isError(v) ? Js.log(v) : ();
+  v |> Belt.Result.getExn;
+};
 
 describe("Test resources JSON parsing", () => {
-  open Expect;
-
   test("parse tenant object", () => {
     let json = {|
         {
@@ -27,8 +29,7 @@ describe("Test resources JSON parsing", () => {
         description: Some("The rdoproject.org tenant"),
         url: "https://review.rdoproject.org/manage",
       };
-
-    let tenant = Tenant.parse(Json.parseOrRaise(json));
+    let tenant = json->parse(Tenant.decode);
     expect(tenant.name) |> toBe(expected.name);
   });
 
@@ -39,40 +40,40 @@ describe("Test resources JSON parsing", () => {
           "type": "pagure",
           "name": "pagure.io"
         }
-      |};
+    |};
     let expected =
       Connection.{
         base_url: Some("https://pagure.io"),
         connection_type: PAGURE,
         name: "pagure.io",
       };
-    let parsed = Connection.parse(Json.parseOrRaise(json));
-    expect(parsed.name) |> toBe(expected.name);
+    let connection = json->parse(Connection.decode);
+    expect(connection.name) |> toBe(expected.name);
   });
 
   let projectJson = {|
-    {
-      "contacts": [
-        "harrymichal@seznam.cz"
-      ],
-      "description": "Unprivileged development environment",
-      "tenant": "local",
-      "website": "https://github.com/debarshiray/toolbox",
-      "name": "toolbox",
-      "source-repositories": [
-        {
-          "containers/toolbox": {
-            "connection": "github.com",
-            "zuul/exclude-unprotected-branches": true
-          }
-        },
-        "software-factory/cauth",
-        {
-          "software-factory/managesf": {}
-        }
-      ]
-    }
-  |};
+       {
+         "contacts": [
+           "harrymichal@seznam.cz"
+         ],
+         "description": "Unprivileged development environment",
+         "tenant": "local",
+         "website": "https://github.com/debarshiray/toolbox",
+         "name": "toolbox",
+         "source-repositories": [
+           {
+             "containers/toolbox": {
+               "connection": "github.com",
+               "zuul/exclude-unprotected-branches": true
+             }
+           },
+           "software-factory/cauth",
+           {
+             "software-factory/managesf": {}
+           }
+         ]
+       }
+     |};
 
   test("parse project object", () => {
     let expected =
@@ -88,35 +89,29 @@ describe("Test resources JSON parsing", () => {
         connection: None,
         documentation: None,
         options: Some([]),
-        source_repositories: [
-          {
+        sourceRepositories: [
+          SourceRepository.Full({
             name: "containers/toolbox",
             connection: Some("github.com"),
-            description: None,
-          },
-          {
-            name: "software-factory/cauth",
-            connection: None,
-            description: None,
-          },
-          {
+          }),
+          SourceRepository.Name("software-factory/cauth"),
+          SourceRepository.Full({
             name: "software-factory/managesf",
             connection: None,
-            description: None,
-          },
+          }),
         ],
       };
-    let parsed = Project.parse(Json.parseOrRaise(projectJson));
+    let parsed = projectJson->parse(Project.decode);
     expect(parsed.name) |> toBe(expected.name);
   });
 
   test("parse repo object", () => {
-    let parsed = Repo.parse(readJson("repo.json"));
-    expect(Belt.List.headExn(parsed).name) |> toBe("test/project-distgit");
+    let parsed = "repo.json"->read->parse(Repo.decode);
+    expect(parsed.name) |> toBe("test/project-distgit");
   });
 
   test("filter project by tenant", () => {
-    let parsed = Project.parse(Json.parseOrRaise(projectJson));
+    let parsed = projectJson->parse(Project.decode);
     expect((
       [parsed] |> Project.filterProjectsByTenant("local") |> Belt.List.length,
       [parsed]
@@ -126,12 +121,11 @@ describe("Test resources JSON parsing", () => {
     |> toEqual((1, 0));
   });
 
-  let parsed = Resources.parse(readJson("resources.json"));
+  let parsed = "resources.json"->read->parse(Resources.decode);
   test("parse resources object", () => {
-    let isToolbox = (project: Project.project): bool =>
-      project.name == "toolbox";
+    let isToolbox = (project: Project.t): bool => project.name == "toolbox";
     let maybeToolbox =
-      parsed.resources.projects->Belt.List.keep(isToolbox)->Belt.List.get(0);
+      parsed.projects->Belt.List.keep(isToolbox)->Belt.List.get(0);
     let my_assert =
       switch (maybeToolbox) {
       | None => false
@@ -140,6 +134,6 @@ describe("Test resources JSON parsing", () => {
     expect(my_assert) |> toBe(true);
   });
   test("parse resources repos", () =>
-    expect(Belt.List.length(parsed.resources.repos)) |> toBe(1)
+    expect(Belt.List.length(parsed.repos)) |> toBe(1)
   );
 });

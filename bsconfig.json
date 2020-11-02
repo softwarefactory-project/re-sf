@@ -17,14 +17,12 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": [
-    "@glennsl/bs-json"
-  ],
-  "bs-dev-dependencies": [
-    "@glennsl/bs-jest"
-  ],
+  "ppx-flags": ["decco/ppx"],
+  "bs-dependencies": ["decco"],
+  "bs-dev-dependencies": ["@glennsl/bs-jest"],
   "warnings": {
     "error": "+101"
   },
+  "namespace": "SF",
   "refmt": 3
 }
