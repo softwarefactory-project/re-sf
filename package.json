@@ -9,10 +9,7 @@
     "test": "yarn run build && jest --verbose --testMatch **/tests/*.bs.js"
   },
   "repository": "git+https://github.com/softwarefactory-project/re-patternfly.git",
-  "keywords": [
-    "Software-Factory",
-    "BuckleScript"
-  ],
+  "keywords": ["Software-Factory", "BuckleScript"],
   "author": "softwarefactory-dev@redhat.com",
   "license": "Apache-2.0",
   "devDependencies": {
@@ -24,13 +21,10 @@
     "url": "https://github.com/softwarefactory-project/re-sf/issues"
   },
   "homepage": "https://github.com/softwarefactory-project/re-sf#readme",
-  "files": [
-    "src/*.re",
-    "bsconfig.json"
-  ],
+  "files": ["src/*.re", "bsconfig.json"],
   "dependencies": {
-    "@glennsl/bs-json": "^5.0.2",
-    "bs-platform": "^8.2.0"
+    "bs-platform": "^8.2.0",
+    "decco": "^1.3.0"
   },
   "main": "index.js"
 }
