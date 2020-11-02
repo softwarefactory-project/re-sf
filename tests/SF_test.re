@@ -131,7 +131,10 @@ describe("Test resources JSON parsing", () => {
     let isToolbox = (project: Project.project): bool =>
       project.name == Some("toolbox");
     let maybeToolbox =
-      parsed.resources.projects->Belt.List.keep(isToolbox)->Belt.List.get(0);
+      parsed.resources.projects
+      ->Belt.Option.getExn
+      ->Belt.List.keep(isToolbox)
+      ->Belt.List.get(0);
     let my_assert =
       switch (maybeToolbox) {
       | None => false
@@ -140,6 +143,7 @@ describe("Test resources JSON parsing", () => {
     expect(my_assert) |> toBe(true);
   });
   test("parse resources repos", () =>
-    expect(Belt.List.length(parsed.resources.repos)) |> toBe(1)
+    expect(Belt.List.length(parsed.resources.repos->Belt.Option.getExn))
+    |> toBe(1)
   );
 });

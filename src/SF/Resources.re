@@ -1,8 +1,8 @@
 type resources = {
-  projects: list(Project.project),
-  connections: list(Connection.connection),
-  tenants: list(Tenant.tenant),
-  repos: list(Repo.repo),
+  projects: option(list(Project.project)),
+  connections: option(list(Connection.connection)),
+  tenants: option(list(Tenant.tenant)),
+  repos: option(list(Repo.repo)),
 };
 type top = {resources};
 
@@ -17,11 +17,11 @@ let decodeRObjects = (parser, json: Js.Json.t) => {
 
 let parseResources = (json: Js.Json.t): resources => {
   Json.Decode.{
-    tenants: json |> field("tenants", decodeRObjects(Tenant.parse)),
-    projects: json |> field("projects", decodeRObjects(Project.parse)),
+    tenants: json |> optional(field("tenants", decodeRObjects(Tenant.parse))),
+    projects: json |> optional(field("projects", decodeRObjects(Project.parse))),
     connections:
-    json |> field("connections", decodeRObjects(Connection.parse)),
-    repos: json |> field("repos", Repo.parse)
+    json |> optional(field("connections", decodeRObjects(Connection.parse))),
+    repos: json |> optional(field("repos", Repo.parse))
   };
 };
 
