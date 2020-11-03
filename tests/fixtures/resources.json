@@ -28,6 +28,16 @@
         "acl": "sf-acl",
         "description": "a test project"
       }
+    },
+    "groups": {
+      "dlrn-core": {
+        "description": "The DLRN core group",
+        "name": "dlrn-core",
+        "members": [
+          "member1",
+          "member2"
+        ]
+      }
     }
   }
 }

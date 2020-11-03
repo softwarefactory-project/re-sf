@@ -3,6 +3,7 @@ type t = {
   connections: list(Connection.t),
   tenants: list(Tenant.t),
   repos: list(Repo.t),
+  groups: list(Group.t),
 };
 
 open Belt;
@@ -38,7 +39,11 @@ let decodeResources = (jsonObject: Js.Dict.t(Js.Json.t)): Decco.result(t) =>
               jsonObject
               ->decodeList("repos", Repo.decode)
               ->Result.flatMap(repos =>
-                  {projects, connections, tenants, repos}->Ok
+                  jsonObject
+                  ->decodeList("groups", Group.decode)
+                  ->Result.flatMap(groups =>
+                      {projects, connections, tenants, repos, groups}->Ok
+                    )
                 )
             )
         )
@@ -83,6 +88,7 @@ let encode = (resources: t): Js.Json.t => {
             ),
             ("tenants", Decco.listToJson(Tenant.encode, resources.tenants)),
             ("repos", Decco.listToJson(Repo.encode, resources.repos)),
+            ("groups", Decco.listToJson(Group.encode, resources.groups)),
           ]),
         ),
       ),

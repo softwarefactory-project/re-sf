@@ -139,4 +139,22 @@ describe("Test resources JSON parsing", () => {
   test("parse resources repos", () =>
     expect(Belt.List.length(parsed.repos)) |> toBe(1)
   );
+
+  test("parse group object", () => {
+    let json = {|
+        {
+          "description": "The DLRN core group",
+          "name": "dlrn-core",
+          "members": ["member1", "member2"]
+        }
+      |};
+    let expected =
+      Group.{
+        name: "dlrn-core",
+        description: Some("The DLRN core group"),
+        members: ["member1", "member2"],
+      };
+    let group = json->parse(Group.decode);
+    expect(group.name) |> toBe(expected.name);
+  });
 });
