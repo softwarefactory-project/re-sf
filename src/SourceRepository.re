@@ -15,9 +15,7 @@ type union =
 
 let encode = (union: union): Js.Json.t =>
   switch (union) {
-  | Full(full) =>
-    // Ideally the name would be removed from the dict value
-    Js.Json.object_(Js.Dict.fromList([(full.name, t_encode(full))]))
+  | Full(full) => Utils.encodeDictName(t_encode(full)) |> Belt.Option.getExn
   | Name(str) => Js.Json.string(str)
   };
 

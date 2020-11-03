@@ -29,6 +29,7 @@ let connection_type_decode = (json: Js.Json.t): Decco.result(connection_type) =>
 [@decco]
 type t = {
   name: string,
+  [@decco.key "base-url"]
   base_url: option(string),
   [@decco.key "type"]
   connection_type,

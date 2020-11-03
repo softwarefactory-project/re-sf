@@ -123,7 +123,8 @@ describe("Test resources JSON parsing", () => {
     |> toEqual((1, 0));
   });
 
-  let parsed = "resources.json"->read->parse(Resources.decode);
+  let raw = "resources.json"->read;
+  let parsed = raw->parse(Resources.decode);
   test("parse resources object", () => {
     let isToolbox = (project: Project.t): bool => project.name == "toolbox";
     let maybeToolbox =
@@ -140,6 +141,10 @@ describe("Test resources JSON parsing", () => {
     expect(Belt.List.length(parsed.repos)) |> toBe(1)
   );
 
+  test("resources encoding roundtrip", () =>
+    parsed->Resources.encode->Js.Json.stringifyWithSpace(2)->expect
+    |> toEqual(raw)
+  );
   test("parse group object", () => {
     let json = {|
         {
