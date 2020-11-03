@@ -71,6 +71,25 @@ let decode = (jsonObject: Js.Json.t): Decco.result(t) => {
     );
 };
 
+let listToJsonDict = (xs, encoder: Decco.encoder('a)): Js.Json.t =>
+  xs
+  ->List.map(encoder)
+  ->List.map(Utils.encodeDictName)
+  ->Utils.sequence
+  ->Belt.Option.getExn
+  ->List.map(x =>
+      x
+      ->Js.Json.decodeObject
+      ->Option.flatMap(dict =>
+          Js.Dict.entries(dict)->Belt.List.fromArray->Some
+        )
+    )
+  ->Utils.sequence
+  ->Belt.Option.getExn
+  ->Belt.List.flatten
+  ->Js.Dict.fromList
+  ->Js.Json.object_;
+
 let encode = (resources: t): Js.Json.t => {
   Js.Json.object_(
     Js.Dict.fromList([
@@ -79,16 +98,13 @@ let encode = (resources: t): Js.Json.t => {
         Js.Json.object_(
           Js.Dict.fromList([
             (
-              "projects",
-              Decco.listToJson(Project.encode, resources.projects),
-            ),
-            (
               "connections",
-              Decco.listToJson(Connection.encode, resources.connections),
+              listToJsonDict(resources.connections, Connection.encode),
             ),
-            ("tenants", Decco.listToJson(Tenant.encode, resources.tenants)),
-            ("repos", Decco.listToJson(Repo.encode, resources.repos)),
-            ("groups", Decco.listToJson(Group.encode, resources.groups)),
+            ("groups", listToJsonDict(resources.groups, Group.encode)),
+            ("projects", listToJsonDict(resources.projects, Project.encode)),
+            ("repos", listToJsonDict(resources.repos, Repo.encode)),
+            ("tenants", listToJsonDict(resources.tenants, Tenant.encode)),
           ]),
         ),
       ),

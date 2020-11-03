@@ -20,6 +20,7 @@ let rec sequence = (xs: list(option('a))): option(list('a)) =>
   | [None, ..._rest] => None
   };
 
+// list(f(a))
 // Sequence a list of Decco.result
 let rec sequenceR = (xs: list(Decco.result('a))): Decco.result(list('a)) =>
   switch (xs) {
@@ -64,6 +65,47 @@ let decodeDictName = (jsonObject: Js.Json.t): option(list(Js.Json.t)) =>
             )
         )
       ->sequence
+    );
+
+let dictFilter = (dict, f) =>
+  dict->Js.Dict.entries->Belt.Array.keep(f)->Js.Dict.fromArray;
+let dictKeyFilter = (dict, f) => dict->dictFilter(((k, _v)) => f(k));
+let dictValueFilter = (dict, f) => dict->dictFilter(((_k, v)) => f(v));
+let isNull = v =>
+  switch (v->Js.Json.classify) {
+  | JSONNull => true
+  | _ => false
+  };
+let dictGetString = (dict, k) =>
+  dict
+  ->Js.Dict.get(k)
+  ->Option.flatMap(name_value => name_value->Js.Json.decodeString);
+
+// This function transform dictionary of the form:
+//   { name: "name", k: v}
+// to:
+//   { "name": { k: v } }
+let encodeDictName = (jsonObject: Js.Json.t): option(Js.Json.t) =>
+  jsonObject
+  ->Js.Json.decodeObject
+  ->Option.flatMap(dict =>
+      dict
+      ->dictGetString("name")
+      ->Option.flatMap(name =>
+          Js.Json.object_(
+            Js.Dict.fromList([
+              (
+                name,
+                Js.Json.object_(
+                  dict
+                  ->dictKeyFilter(k => k != "name")
+                  ->dictValueFilter(v => !isNull(v)),
+                ),
+              ),
+            ]),
+          )
+          ->Some
+        )
     );
 
 let decodeOneDictName = (jsonObject: Js.Json.t): option(Js.Json.t) =>

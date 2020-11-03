@@ -1,25 +1,24 @@
 {
   "resources": {
-    "tenants": {
-      "rdoproject.org": {
-        "default-connection": "rdoproject.org",
-        "description": "The rdoproject.org tenant",
-        "url": "https://review.rdoproject.org/manage",
-        "name": "rdoproject.org"
-      }
-    },
     "connections": {
       "github.com": {
         "base-url": "https://github.com",
-        "type": "github",
-        "name": "github.com"
+        "type": "github"
+      }
+    },
+    "groups": {
+      "dlrn-core": {
+        "description": "The DLRN core group",
+        "members": [
+          "member1",
+          "member2"
+        ]
       }
     },
     "projects": {
       "toolbox": {
         "description": "Unprivileged development environment",
         "tenant": "local",
-        "name": "toolbox",
         "source-repositories": []
       }
     },
@@ -29,14 +28,11 @@
         "description": "a test project"
       }
     },
-    "groups": {
-      "dlrn-core": {
-        "description": "The DLRN core group",
-        "name": "dlrn-core",
-        "members": [
-          "member1",
-          "member2"
-        ]
+    "tenants": {
+      "rdoproject.org": {
+        "default-connection": "rdoproject.org",
+        "description": "The rdoproject.org tenant",
+        "url": "https://review.rdoproject.org/manage"
       }
     }
   }
