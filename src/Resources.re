@@ -1,9 +1,9 @@
 type t = {
-  projects: list(Project.t),
-  connections: list(Connection.t),
-  tenants: list(Tenant.t),
-  repos: list(Repo.t),
-  groups: list(Group.t),
+  projects: option(list(Project.t)),
+  connections: option(list(Connection.t)),
+  tenants: option(list(Tenant.t)),
+  repos: option(list(Repo.t)),
+  groups: option(list(Group.t)),
 };
 
 open Belt;
@@ -15,14 +15,23 @@ let decodeList =
       key: string,
       decoder: Decco.decoder('t),
     )
-    : Decco.result(list('t)) => {
+    : Decco.result(option(list('t))) => {
   switch (jsonDict->Js.Dict.get(key)) {
   | Some(v) =>
     v
     ->Utils.decodeDictName
     ->Utils.note(Utils.makeError("Invalid value", v))
     ->Result.flatMap(dicts => dicts->List.map(decoder)->Utils.sequenceR)
-  | None => Decco.error("Invalid list: " ++ key, Js.Json.object_(jsonDict))
+    ->{
+        (
+          rl =>
+            switch (rl) {
+            | Ok(l) => Ok(Some(l))
+            | Error(_) => Ok(None)
+            }
+        );
+      }
+  | None => Ok(None)
   };
 };
 
@@ -90,22 +99,48 @@ let listToJsonDict = (xs, encoder: Decco.encoder('a)): Js.Json.t =>
   ->Js.Dict.fromList
   ->Js.Json.object_;
 
+let optionalListToJsonDict =
+    (oxs: option(list('a)), encoder: Decco.encoder('a)): Js.Json.t => {
+  switch (oxs) {
+  | Some(xs) => listToJsonDict(xs, encoder)
+  | None => Js.Json.null
+  };
+};
+
 let encode = (resources: t): Js.Json.t => {
   Js.Json.object_(
     Js.Dict.fromList([
       (
         "resources",
         Js.Json.object_(
-          Js.Dict.fromList([
-            (
-              "connections",
-              listToJsonDict(resources.connections, Connection.encode),
-            ),
-            ("groups", listToJsonDict(resources.groups, Group.encode)),
-            ("projects", listToJsonDict(resources.projects, Project.encode)),
-            ("repos", listToJsonDict(resources.repos, Repo.encode)),
-            ("tenants", listToJsonDict(resources.tenants, Tenant.encode)),
-          ]),
+          Js.Dict.fromList(
+            [
+              (
+                "connections",
+                optionalListToJsonDict(
+                  resources.connections,
+                  Connection.encode,
+                ),
+              ),
+              (
+                "groups",
+                optionalListToJsonDict(resources.groups, Group.encode),
+              ),
+              (
+                "projects",
+                optionalListToJsonDict(resources.projects, Project.encode),
+              ),
+              (
+                "repos",
+                optionalListToJsonDict(resources.repos, Repo.encode),
+              ),
+              (
+                "tenants",
+                optionalListToJsonDict(resources.tenants, Tenant.encode),
+              ),
+            ]
+            ->Belt.List.keep(((_, json)) => !json->Utils.isNull),
+          ),
         ),
       ),
     ]),
