@@ -24,7 +24,7 @@ module Connection = {
     switch (connections->Belt.List.keep(c => c.name == name)->Belt.List.head) {
     | Some(c) =>
       switch (c.connection_type) {
-      | SFV1.Connection.PAGURE =>
+      | SFV1.Connection.Pagure =>
         Pagure({url: c.base_url->Belt.Option.getExn})
       | _ => Todo(c.name)
       }

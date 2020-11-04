@@ -44,7 +44,7 @@ describe("Test resources JSON parsing", () => {
     let expected =
       Connection.{
         base_url: Some("https://pagure.io"),
-        connection_type: PAGURE,
+        connection_type: Pagure,
         name: "pagure.io",
       };
     let connection = json->parse(Connection.decode);
