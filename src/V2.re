@@ -82,14 +82,28 @@ module Project = {
   [@decco]
   type t = {
     name: string,
+    description: string,
     sourceRepository: list(SourceRepository.t),
+    website: option(string),
+    documentation: option(string),
+    [@decco.key "issue-tracker-url"]
+    issue_tracker_url: option(string),
+    [@decco.key "mailing-lists"]
+    mailing_lists: option(list(string)),
+    contacts: option(list(string)),
   };
   let fromV1 =
       (res: Resources.t, tenant: SFV1.Tenant.t, project: SFV1.Project.t): t => {
     name: project.name,
+    description: project.description,
     sourceRepository:
       project.sourceRepositories
       ->Belt.List.map(SourceRepository.fromV1(res, project, tenant)),
+    website: project.website,
+    documentation: project.documentation,
+    issue_tracker_url: project.issue_tracker_url,
+    mailing_lists: project.mailing_lists,
+    contacts: project.contacts,
   };
 };
 
