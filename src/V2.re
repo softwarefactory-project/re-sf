@@ -9,24 +9,25 @@ let mapMap = (x, f) => mapFilterMap(x, _ => true, f);
 
 module Connection = {
   [@decco]
-  type local = {acl: string};
-  [@decco]
-  type pagure = {url: string};
-  [@decco]
   type t =
-    | Local(local)
-    | Pagure(pagure)
-    | Todo(string)
+    | Gerrit(string)
+    | Pagure(string)
+    | GitLab(string)
+    | GitHub(string)
+    | Git(string)
     | Unknown(string)
     | Unspecified;
 
   let fromV1 = (connections: list(Connection.t), name: string): t => {
     switch (connections->Belt.List.keep(c => c.name == name)->Belt.List.head) {
     | Some(c) =>
-      switch (c.connection_type) {
-      | SFV1.Connection.Pagure =>
-        Pagure({url: c.base_url->Belt.Option.getExn})
-      | _ => Todo(c.name)
+      switch (c.connection_type, c.base_url) {
+      | (SFV1.Connection.Gerrit, Some(url)) => Gerrit(url)
+      | (SFV1.Connection.Pagure, Some(url)) => Pagure(url)
+      | (SFV1.Connection.Gitlab, Some(url)) => GitLab(url)
+      | (SFV1.Connection.Github, Some(url)) => GitHub(url)
+      | (SFV1.Connection.Git, Some(url)) => Git(url)
+      | (_, None) => Unknown(c.name)
       }
     | None => name != "" ? Unknown(name) : Unspecified
     };
@@ -66,14 +67,11 @@ module SourceRepository = {
         );
     let description = isLocal->Belt.Option.map(r => r.description);
     let location =
-      switch (isLocal) {
-      | Some(repo) => Connection.Local({acl: repo.acl})
-      | None =>
-        Connection.fromV1(
-          res.connections->Belt.Option.getWithDefault([]),
-          connectionName,
-        )
-      };
+      Connection.fromV1(
+        res.connections->Belt.Option.getWithDefault([]),
+        connectionName,
+      );
+
     {name, description, location};
   };
 };
