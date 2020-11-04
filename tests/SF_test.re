@@ -128,7 +128,10 @@ describe("Test resources JSON parsing", () => {
   test("parse resources object", () => {
     let isToolbox = (project: Project.t): bool => project.name == "toolbox";
     let maybeToolbox =
-      parsed.projects->Belt.List.keep(isToolbox)->Belt.List.head;
+      parsed.projects
+      ->Belt.Option.flatMap(projects =>
+          projects->Belt.List.keep(isToolbox)->Belt.List.head
+        );
     let my_assert =
       switch (maybeToolbox) {
       | None => false
@@ -138,7 +141,7 @@ describe("Test resources JSON parsing", () => {
   });
 
   test("parse resources repos", () =>
-    expect(Belt.List.length(parsed.repos)) |> toBe(1)
+    expect(Belt.List.length(parsed.repos->Belt.Option.getExn)) |> toBe(1)
   );
 
   test("resources encoding roundtrip", () =>
