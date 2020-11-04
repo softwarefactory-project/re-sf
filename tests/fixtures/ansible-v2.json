@@ -6,7 +6,7 @@
         {
           "name": "ansible",
           "description": "Ansible is an IT automation tool.",
-          "sourceRepository": [
+          "source-repositories": [
             {
               "name": "ansible/zuul-config",
               "description": null,
@@ -49,7 +49,7 @@
         {
           "name": "internal",
           "description": "Internal configuration project",
-          "sourceRepository": [
+          "source-repositories": [
             {
               "name": "sf-jobs",
               "description": null,

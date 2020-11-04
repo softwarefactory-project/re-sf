@@ -83,7 +83,8 @@ module Project = {
   type t = {
     name: string,
     description: string,
-    sourceRepository: list(SourceRepository.t),
+    [@decco.key "source-repositories"]
+    source_repositories: list(SourceRepository.t),
     website: option(string),
     documentation: option(string),
     [@decco.key "issue-tracker-url"]
@@ -96,7 +97,7 @@ module Project = {
       (res: Resources.t, tenant: SFV1.Tenant.t, project: SFV1.Project.t): t => {
     name: project.name,
     description: project.description,
-    sourceRepository:
+    source_repositories:
       project.sourceRepositories
       ->Belt.List.map(SourceRepository.fromV1(res, project, tenant)),
     website: project.website,
