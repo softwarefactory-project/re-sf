@@ -113,6 +113,7 @@ module Tenant = {
   type t = {
     name: string,
     projects: list(Project.t),
+    description: option(string),
   };
   let fromV1 =
       (defaultTenant: string, res: Resources.t, tenant: SFV1.Tenant.t): t => {
@@ -125,6 +126,7 @@ module Tenant = {
       };
     {
       name: tenant.name,
+      description: tenant.description,
       projects:
         res.projects->mapFilterMap(isMyProject, Project.fromV1(res, tenant)),
     };

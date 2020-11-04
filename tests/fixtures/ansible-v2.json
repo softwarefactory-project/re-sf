@@ -73,7 +73,8 @@
           "mailing-lists": null,
           "contacts": null
         }
-      ]
+      ],
+      "description": "The ansible tenant."
     }
   ]
 }
