@@ -9,26 +9,27 @@ let mapMap = (x, f) => mapFilterMap(x, _ => true, f);
 
 module Connection = {
   [@decco]
-  type local = {acl: string};
-  [@decco]
-  type pagure = {url: string};
-  [@decco]
   type t =
-    | Local(local)
-    | Pagure(pagure)
-    | Todo(string)
-    | Unknown(string)
-    | Unspecified;
+    | Gerrit(string)
+    | Pagure(string)
+    | GitLab(string)
+    | GitHub(string)
+    | Git(string);
 
-  let fromV1 = (connections: list(Connection.t), name: string): t => {
+  let fromV1 =
+      (connections: list(Connection.t), name: string)
+      : Belt.Result.t(t, string) => {
     switch (connections->Belt.List.keep(c => c.name == name)->Belt.List.head) {
     | Some(c) =>
-      switch (c.connection_type) {
-      | SFV1.Connection.Pagure =>
-        Pagure({url: c.base_url->Belt.Option.getExn})
-      | _ => Todo(c.name)
+      switch (c.connection_type, c.base_url) {
+      | (SFV1.Connection.Gerrit, Some(url)) => Gerrit(url)->Ok
+      | (SFV1.Connection.Pagure, Some(url)) => Pagure(url)->Ok
+      | (SFV1.Connection.Gitlab, Some(url)) => GitLab(url)->Ok
+      | (SFV1.Connection.Github, Some(url)) => GitHub(url)->Ok
+      | (SFV1.Connection.Git, Some(url)) => Git(url)->Ok
+      | (_, None) => c.name->Error
       }
-    | None => name != "" ? Unknown(name) : Unspecified
+    | None => name->Error
     };
   };
 };
@@ -53,7 +54,7 @@ module SourceRepository = {
         tenant: SFV1.Tenant.t,
         sr: SFV1.SourceRepository.union,
       )
-      : t => {
+      : Belt.Result.t(t, string) => {
     let name = SFV1.SourceRepository.getName(sr);
     let isLocal = getLocal(res, name);
     let connectionName =
@@ -65,16 +66,11 @@ module SourceRepository = {
             ),
         );
     let description = isLocal->Belt.Option.map(r => r.description);
-    let location =
-      switch (isLocal) {
-      | Some(repo) => Connection.Local({acl: repo.acl})
-      | None =>
-        Connection.fromV1(
-          res.connections->Belt.Option.getWithDefault([]),
-          connectionName,
-        )
-      };
-    {name, description, location};
+    Connection.fromV1(
+      res.connections->Belt.Option.getWithDefault([]),
+      connectionName,
+    )
+    ->Belt.Result.flatMap(location => {name, description, location}->Ok);
   };
 };
 
@@ -99,7 +95,15 @@ module Project = {
     description: project.description,
     source_repositories:
       project.sourceRepositories
-      ->Belt.List.map(SourceRepository.fromV1(res, project, tenant)),
+      ->Belt.List.map(sr =>
+          switch (SourceRepository.fromV1(res, project, tenant, sr)) {
+          | Ok(sr) => [sr]
+          // TODO: handle the case where a source-repository does not have a valid connection
+          // though this should already be enforced by the managesf resource engine
+          | Error(_) => []
+          }
+        )
+      ->Belt.List.flatten,
     website: project.website,
     documentation: project.documentation,
     issue_tracker_url: project.issue_tracker_url,

@@ -11,32 +11,32 @@
               "name": "ansible/zuul-config",
               "description": null,
               "location": [
-                "Todo",
-                "github.com"
+                "GitHub",
+                "https://github.com"
               ]
             },
             {
               "name": "ansible/zuul-jobs",
               "description": null,
               "location": [
-                "Todo",
-                "github.com"
+                "GitHub",
+                "https://github.com"
               ]
             },
             {
               "name": "ansible/ansible",
               "description": null,
               "location": [
-                "Todo",
-                "github.com"
+                "GitHub",
+                "https://github.com"
               ]
             },
             {
               "name": "ansible/awx",
               "description": null,
               "location": [
-                "Todo",
-                "github.com"
+                "GitHub",
+                "https://github.com"
               ]
             }
           ],
@@ -54,16 +54,16 @@
               "name": "sf-jobs",
               "description": null,
               "location": [
-                "Todo",
-                "gerrit"
+                "Gerrit",
+                "https://softwarefactory-project.io/r"
               ]
             },
             {
               "name": "zuul/zuul-jobs",
               "description": null,
               "location": [
-                "Todo",
-                "opendev.org"
+                "Gerrit",
+                "https://review.opendev.org"
               ]
             }
           ],
