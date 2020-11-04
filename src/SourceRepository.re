@@ -1,7 +1,50 @@
+type eclass =
+  | Job
+  | Semaphore
+  | Project
+  | ProjectTemplate
+  | Nodeset
+  | Secret;
+
+let eclass_encode = (c: eclass): Js.Json.t => {
+  switch (c) {
+  | Job => "job"->Js.Json.string
+  | Semaphore => "semaphore"->Js.Json.string
+  | Project => "project"->Js.Json.string
+  | ProjectTemplate => "project-template"->Js.Json.string
+  | Nodeset => "nodeset"->Js.Json.string
+  | Secret => "secret"->Js.Json.string
+  };
+};
+
+let eclass_decode = (json: Js.Json.t): Decco.result(eclass) => {
+  json
+  ->Decco.stringFromJson
+  ->Belt.Result.flatMap(str => {
+      switch (str) {
+      | "job" => Job->Ok
+      | "semaphore" => Semaphore->Ok
+      | "project" => Project->Ok
+      | "projectTemplate" => ProjectTemplate->Ok
+      | "nodeset" => Nodeset->Ok
+      | "secret" => Secret->Ok
+      | _ => Decco.error("Invalid Zuul configuration class", json)
+      }
+    });
+};
+type eclasses = option(list(eclass));
+let eclasses_encode = (eclasses: eclasses) =>
+  Decco.optionToJson(Decco.listToJson(eclass_encode), eclasses);
+let eclasses_decode = (jsonObject: Js.Json.t): Decco.result(eclasses) =>
+  Decco.optionFromJson(Decco.listFromJson(eclass_decode), jsonObject);
+let eclasses_codec = (eclasses_encode, eclasses_decode);
+
 [@decco]
 type t = {
   name: string,
   connection: option(string),
+  [@decco.key "zuul/include"]
+  zuul_include: [@decco.codec eclasses_codec] eclasses,
   // This is not provided by the resource schema yet, we use it as a place
   // holder to lift repo description into the project schema.
   description: option(string),

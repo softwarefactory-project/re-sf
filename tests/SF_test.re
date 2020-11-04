@@ -64,6 +64,7 @@ describe("Test resources JSON parsing", () => {
            {
              "containers/toolbox": {
                "connection": "github.com",
+               "zuul/include": [],
                "zuul/exclude-unprotected-branches": true
              }
            },
@@ -94,12 +95,14 @@ describe("Test resources JSON parsing", () => {
             name: "containers/toolbox",
             connection: Some("github.com"),
             description: None,
+            zuul_include: Some([Job]),
           }),
           SourceRepository.Name("software-factory/cauth"),
           SourceRepository.Full({
             name: "software-factory/managesf",
             connection: None,
             description: None,
+            zuul_include: None,
           }),
         ],
       };
