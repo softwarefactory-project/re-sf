@@ -45,9 +45,6 @@ type t = {
   connection: option(string),
   [@decco.key "zuul/include"]
   zuul_include: [@decco.codec eclasses_codec] eclasses,
-  // This is not provided by the resource schema yet, we use it as a place
-  // holder to lift repo description into the project schema.
-  description: option(string),
 };
 
 // Unfortunately, a source-repository can be defined either by a name or it's type
@@ -55,6 +52,18 @@ type t = {
 type union =
   | Full(t)
   | Name(string);
+
+let getName = (union: union): string =>
+  switch (union) {
+  | Full(t) => t.name
+  | Name(s) => s
+  };
+
+let getConnection = (union: union): option(string) =>
+  switch (union) {
+  | Full(t) => t.connection
+  | Name(_) => None
+  };
 
 let encode = (union: union): Js.Json.t =>
   switch (union) {

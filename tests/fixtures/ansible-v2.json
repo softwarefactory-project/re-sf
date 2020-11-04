@@ -1,0 +1,67 @@
+{
+  "tenants": [
+    {
+      "name": "ansible",
+      "projects": [
+        {
+          "name": "ansible",
+          "sourceRepository": [
+            {
+              "name": "ansible/zuul-config",
+              "description": null,
+              "location": [
+                "Todo",
+                "github.com"
+              ]
+            },
+            {
+              "name": "ansible/zuul-jobs",
+              "description": null,
+              "location": [
+                "Todo",
+                "github.com"
+              ]
+            },
+            {
+              "name": "ansible/ansible",
+              "description": null,
+              "location": [
+                "Todo",
+                "github.com"
+              ]
+            },
+            {
+              "name": "ansible/awx",
+              "description": null,
+              "location": [
+                "Todo",
+                "github.com"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "internal",
+          "sourceRepository": [
+            {
+              "name": "sf-jobs",
+              "description": null,
+              "location": [
+                "Todo",
+                "gerrit"
+              ]
+            },
+            {
+              "name": "zuul/zuul-jobs",
+              "description": null,
+              "location": [
+                "Todo",
+                "opendev.org"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

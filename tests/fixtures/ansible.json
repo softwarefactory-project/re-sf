@@ -1,0 +1,120 @@
+{
+  "resources": {
+    "projects": {
+      "ansible": {
+        "description": "Ansible is an IT automation tool.",
+        "tenant": "ansible",
+        "name": "ansible",
+        "source-repositories": [
+          {
+            "ansible/zuul-config": {
+              "zuul/config-project": true,
+              "zuul/exclude-unprotected-branches": true
+            }
+          },
+          {
+            "ansible/zuul-jobs": {
+              "zuul/exclude-unprotected-branches": true
+            }
+          },
+          {
+            "ansible/ansible": {
+              "zuul/include": []
+            }
+          },
+          {
+            "ansible/awx": {
+              "zuul/exclude-unprotected-branches": true
+            }
+          }
+        ]
+      },
+      "internal": {
+        "description": "Internal configuration project",
+        "tenant": "ansible",
+        "name": "internal",
+        "source-repositories": [
+          {
+            "sf-jobs": {
+              "connection": "gerrit",
+              "zuul/shadow": ["ansible/zuul-config", "ansible/zuul-jobs"]
+            }
+          },
+          {
+            "zuul/zuul-jobs": {
+              "connection": "opendev.org",
+              "zuul/exclude": ["project", "project-template", "pipeline"],
+              "zuul/shadow": [
+                "ansible/zuul-config",
+                "ansible/zuul-jobs",
+                "sf-jobs"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "tenants": {
+      "ansible": {
+        "default-connection": "github.com",
+        "description": "The ansible tenant.",
+        "url": "https://ansible.softwarefactory-project.io/manage",
+        "name": "ansible"
+      }
+    },
+    "connections": {
+      "gerrit": {
+        "base-url": "https://softwarefactory-project.io/r",
+        "name": "gerrit",
+        "type": "gerrit"
+      },
+      "gerrit.ovirt.org": {
+        "base-url": "https://gerrit.ovirt.org",
+        "name": "gerrit.ovirt.org",
+        "type": "gerrit"
+      },
+      "github.com": {
+        "base-url": "https://github.com",
+        "github-app-name": "softwarefactory-project-zuul",
+        "github-label": "mergeit",
+        "name": "github.com",
+        "type": "github"
+      },
+      "gitlab.com": {
+        "base-url": "https://gitlab.com",
+        "name": "gitlab.com",
+        "type": "git"
+      },
+      "opendev.org": {
+        "base-url": "https://review.opendev.org",
+        "name": "opendev.org",
+        "type": "gerrit"
+      },
+      "ovirt_staging_gerrit": {
+        "base-url": "https://gerrit-staging.phx.ovirt.org",
+        "name": "ovirt_staging_gerrit",
+        "type": "gerrit"
+      },
+      "pagure.io": {
+        "base-url": "https://pagure.io",
+        "name": "pagure.io",
+        "type": "pagure"
+      },
+      "rdoci": {
+        "base-url": "https://review.opendev.org",
+        "name": "rdoci",
+        "type": "gerrit"
+      },
+      "rdoproject.org": {
+        "base-url": "https://review.rdoproject.org/r",
+        "name": "rdoproject.org",
+        "type": "gerrit"
+      },
+      "src.fedoraproject.org": {
+        "base-url": "https://src.fedoraproject.org",
+        "name": "src.fedoraproject.org",
+        "type": "pagure"
+      }
+    }
+  }
+}

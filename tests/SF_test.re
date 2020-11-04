@@ -94,14 +94,12 @@ describe("Test resources JSON parsing", () => {
           SourceRepository.Full({
             name: "containers/toolbox",
             connection: Some("github.com"),
-            description: None,
             zuul_include: Some([Job]),
           }),
           SourceRepository.Name("software-factory/cauth"),
           SourceRepository.Full({
             name: "software-factory/managesf",
             connection: None,
-            description: None,
             zuul_include: None,
           }),
         ],
@@ -151,6 +149,18 @@ describe("Test resources JSON parsing", () => {
     parsed->Resources.encode->Js.Json.stringifyWithSpace(2)->expect
     |> toEqual(raw)
   );
+
+  test("v2 fromV1 encoding", () =>
+    "ansible.json"
+    ->read
+    ->parse(Resources.decode)
+    ->V2.fromV1(~defaultTenant="local")
+    ->V2.t_encode
+    ->Js.Json.stringifyWithSpace(2)
+    ->expect
+    |> toEqual("ansible-v2.json"->read->Js.String.trim)
+  );
+
   test("parse group object", () => {
     let json = {|
         {
