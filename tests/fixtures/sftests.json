@@ -1,0 +1,79 @@
+{
+  "resources": {
+    "acls": {
+      "config-acl": {
+        "file": "[access \"refs/*\"]\n  read = group config-core\n  owner = group config-ptl\n[access \"refs/heads/*\"]\n  label-Code-Review = -2..+2 group config-core\n  label-Code-Review = -2..+2 group config-ptl\n  label-Verified = -2..+2 group config-ptl\n  label-Workflow = -1..+1 group config-core\n  label-Workflow = -1..+1 group config-ptl\n  label-Workflow = -1..+0 group Registered Users\n  rebase = group config-core\n  abandon = group config-core\n  submit = group config-ptl\n  read = group config-core\n  read = group Registered Users\n[access \"refs/meta/config\"]\n  read = group config-core\n  read = group Registered Users\n[receive]\n  requireChangeId = true\n[submit]\n  mergeContent = false\n  action = fast forward only\n[plugin \"reviewers-by-blame\"]\n  maxReviewers = 5\n  ignoreDrafts = true\n  ignoreSubjectRegEx = (WIP|DNM)(.*)\n",
+        "groups": ["config-ptl", "config-core"],
+        "name": "config-acl"
+      }
+    },
+    "connections": {
+      "gerrit": {
+        "base-url": "https://sftests.com/r",
+        "type": "gerrit",
+        "name": "gerrit"
+      }
+    },
+    "groups": {
+      "config-core": {
+        "description": "Team core for the config repo",
+        "members": [],
+        "name": "config-core"
+      },
+      "config-ptl": {
+        "description": "Team lead for the config repo",
+        "members": ["admin@sftests.com"],
+        "name": "config-ptl"
+      }
+    },
+    "projects": {
+      "internal": {
+        "description": "Internal configuration project",
+        "tenant": "local",
+        "name": "internal",
+        "source-repositories": [
+          { "config": { "zuul/config-project": true } },
+          { "sf-jobs": {} },
+          {
+            "zuul-jobs": {
+              "connection": "gerrit",
+              "zuul/include": ["job"],
+              "zuul/shadow": "sf-jobs"
+            }
+          }
+        ]
+      }
+    },
+    "repos": {
+      "config": {
+        "acl": "config-acl",
+        "description": "Config repository",
+        "name": "config"
+      },
+      "sf-jobs": {
+        "acl": "config-acl",
+        "description": "Local job repository",
+        "name": "sf-jobs"
+      },
+      "zuul-jobs": {
+        "acl": "config-acl",
+        "description": "The https://opendev.org/zuul/zuul-jobs repository copy",
+        "name": "zuul-jobs"
+      }
+    },
+    "tenants": {
+      "local": {
+        "default-connection": "gerrit",
+        "description": "The local tenant.",
+        "tenant-options": {
+          "zuul/max-job-timeout": 10800,
+          "zuul/report-build-page": true
+        },
+        "url": "https://sftests.com/manage",
+        "name": "local"
+      }
+    }
+  },
+  "config-repo": "https://sftests.com/r/config",
+  "public-url": "https://sftests.com/manage"
+}

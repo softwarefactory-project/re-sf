@@ -65,17 +65,13 @@ let decode = (jsonObject: Js.Json.t): Decco.result(t) => {
   ->Utils.note(error)
   ->Result.flatMap(topDict =>
       topDict
-      ->Utils.decodeSingleKeyDict
+      ->Js.Dict.get("resources")
       ->Utils.note(error)
-      ->Result.flatMap(((keyName, v)) =>
-          switch (keyName) {
-          | "resources" =>
-            v
-            ->Js.Json.decodeObject
-            ->Utils.note(error)
-            ->Result.flatMap(resDict => decodeResources(resDict))
-          | _ => error->Error
-          }
+      ->Result.flatMap(v =>
+          v
+          ->Js.Json.decodeObject
+          ->Utils.note(error)
+          ->Result.flatMap(resDict => decodeResources(resDict))
         )
     );
 };
