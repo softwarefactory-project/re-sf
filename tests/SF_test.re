@@ -141,6 +141,15 @@ describe("Test resources JSON parsing", () => {
     expect(my_assert) |> toBe(true);
   });
 
+  test("parse complete resources object", () => {
+    expect(
+      "sftests.json"->read->parse(Resources.decode).projects
+      ->Belt.Option.getWithDefault([])
+      ->Belt.List.length,
+    )
+    |> toBe(1)
+  });
+
   test("parse resources repos", () =>
     expect(Belt.List.length(parsed.repos->Belt.Option.getExn)) |> toBe(1)
   );
