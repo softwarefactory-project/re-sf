@@ -187,4 +187,8 @@ describe("Test resources JSON parsing", () => {
     let group = json->parse(Group.decode);
     expect(group.name) |> toBe(expected.name);
   });
+
+  test("parse info", () => {
+    expect("info.json"->read->parse(Info.decode).version) |> toBe("master")
+  });
 });

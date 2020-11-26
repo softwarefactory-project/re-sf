@@ -1,0 +1,10 @@
+{
+  "services": [{ "name": "gerrit", "path": "/r" }],
+  "auths": {
+    "oauth": ["github"],
+    "other": [{ "name": "openid", "text": "login with launchpad" }]
+  },
+  "version": "master",
+  "header_logo_b64data": "data",
+  "splash_image_b64data": "data"
+}
