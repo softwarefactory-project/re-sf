@@ -5,6 +5,12 @@ type service = {
 };
 
 [@decco]
+type link = {
+  name: string,
+  link: string,
+};
+
+[@decco]
 type auth_other = {
   name: string,
   text: string,
@@ -21,6 +27,9 @@ type t = {
   services: list(service),
   auths: auth,
   version: string,
+  documentation_links: list(link),
+  status_links: list(link),
+  contact_links: list(link),
   header_logo_b64data: string,
   splash_image_b64data: string,
 };

@@ -1,10 +1,30 @@
 {
-  "services": [{ "name": "gerrit", "path": "/r" }],
+  "services": [
+    {
+      "name": "gerrit",
+      "path": "/r"
+    }
+  ],
   "auths": {
-    "oauth": ["github"],
-    "other": [{ "name": "openid", "text": "login with launchpad" }]
+    "oauth": [
+      "github"
+    ],
+    "other": [
+      {
+        "name": "openid",
+        "text": "login with launchpad"
+      }
+    ]
   },
   "version": "master",
+  "documentation_links": [
+    {
+      "name": "Software Factory",
+      "link": "/docs/"
+    }
+  ],
+  "status_links": [],
+  "contact_links": [],
   "header_logo_b64data": "data",
   "splash_image_b64data": "data"
 }
