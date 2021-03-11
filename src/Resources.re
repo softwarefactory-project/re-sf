@@ -27,7 +27,7 @@ let decodeList =
           rl =>
             switch (rl) {
             | Ok(l) => Ok(Some(l))
-            | Error(_) => Ok(None)
+            | Error(xs) => { Js.log2("Could not decode", xs); Ok(None) }
             }
         );
       }

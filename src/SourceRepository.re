@@ -25,7 +25,7 @@ let eclass_decode = (json: Js.Json.t): Decco.result(eclass) => {
       | "job" => Job->Ok
       | "semaphore" => Semaphore->Ok
       | "project" => Project->Ok
-      | "projectTemplate" => ProjectTemplate->Ok
+      | "project-template" => ProjectTemplate->Ok
       | "nodeset" => Nodeset->Ok
       | "secret" => Secret->Ok
       | _ => Decco.error("Invalid Zuul configuration class", json)
