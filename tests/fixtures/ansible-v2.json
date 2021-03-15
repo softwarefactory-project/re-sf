@@ -74,7 +74,8 @@
           "contacts": null
         }
       ],
-      "description": "The ansible tenant."
+      "description": "The ansible tenant.",
+      "url": "https://ansible.softwarefactory-project.io/manage"
     }
   ],
   "puburl": "https://ansible.softwarefactory-project.io/manage"

@@ -154,6 +154,7 @@ module Tenant = {
     name: string,
     projects: list(Project.t),
     description: option(string),
+    url: string,
   };
   let fromV1 =
       (defaultTenant: string, res: Resources.t, tenant: SFV1.Tenant.t): t => {
@@ -169,6 +170,7 @@ module Tenant = {
       description: tenant.description,
       projects:
         res.projects->mapFilterMap(isMyProject, Project.fromV1(res, tenant)),
+      url: tenant.url,
     };
   };
 };
