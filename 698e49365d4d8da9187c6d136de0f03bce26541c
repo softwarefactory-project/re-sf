@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b266871_00d1b916",
+        "filename": "src/V2.re",
+        "patchSetId": 1
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 7
+      },
+      "writtenOn": "2021-03-15T18:08:35Z",
+      "side": 1,
+      "message": "perhaps let\u0027s trim the /manage/ from the url here?",
+      "range": {
+        "startLine": 173,
+        "startChar": 17,
+        "endLine": 173,
+        "endChar": 21
+      },
+      "revId": "698e49365d4d8da9187c6d136de0f03bce26541c",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": true
+    }
+  ]
+}
