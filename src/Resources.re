@@ -4,6 +4,7 @@ type t = {
   tenants: option(list(Tenant.t)),
   repos: option(list(Repo.t)),
   groups: option(list(Group.t)),
+  puburl: string,
 };
 
 open Belt;
@@ -27,7 +28,9 @@ let decodeList =
           rl =>
             switch (rl) {
             | Ok(l) => Ok(Some(l))
-            | Error(xs) => { Js.log2("Could not decode", xs); Ok(None) }
+            | Error(xs) =>
+              Js.log2("Could not decode", xs);
+              Ok(None);
             }
         );
       }
@@ -35,7 +38,8 @@ let decodeList =
   };
 };
 
-let decodeResources = (jsonObject: Js.Dict.t(Js.Json.t)): Decco.result(t) =>
+let decodeResources =
+    (jsonObject: Js.Dict.t(Js.Json.t), puburl: string): Decco.result(t) =>
   jsonObject
   ->decodeList("projects", Project.decode)
   ->Result.flatMap(projects =>
@@ -51,7 +55,8 @@ let decodeResources = (jsonObject: Js.Dict.t(Js.Json.t)): Decco.result(t) =>
                   jsonObject
                   ->decodeList("groups", Group.decode)
                   ->Result.flatMap(groups =>
-                      {projects, connections, tenants, repos, groups}->Ok
+                      {projects, connections, tenants, repos, groups, puburl}
+                      ->Ok
                     )
                 )
             )
@@ -65,13 +70,25 @@ let decode = (jsonObject: Js.Json.t): Decco.result(t) => {
   ->Utils.note(error)
   ->Result.flatMap(topDict =>
       topDict
-      ->Js.Dict.get("resources")
+      ->Js.Dict.get("public-url")
       ->Utils.note(error)
       ->Result.flatMap(v =>
           v
-          ->Js.Json.decodeObject
+          ->Js.Json.decodeString
           ->Utils.note(error)
-          ->Result.flatMap(resDict => decodeResources(resDict))
+          ->Result.flatMap(puburl =>
+              topDict
+              ->Js.Dict.get("resources")
+              ->Utils.note(error)
+              ->Result.flatMap(v =>
+                  v
+                  ->Js.Json.decodeObject
+                  ->Utils.note(error)
+                  ->Result.flatMap(resDict =>
+                      decodeResources(resDict, puburl)
+                    )
+                )
+            )
         )
     );
 };
@@ -106,6 +123,7 @@ let optionalListToJsonDict =
 let encode = (resources: t): Js.Json.t => {
   Js.Json.object_(
     Js.Dict.fromList([
+      ("public-url", resources.puburl->Js.Json.string),
       (
         "resources",
         Js.Json.object_(

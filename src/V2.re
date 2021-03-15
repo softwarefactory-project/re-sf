@@ -174,10 +174,16 @@ module Tenant = {
 };
 
 [@decco]
-type t = {tenants: list(Tenant.t)};
+type t = {
+  tenants: list(Tenant.t),
+  puburl: string,
+};
 
 let fromV1 = (~defaultTenant: string, res: Resources.t): t => {
-  {tenants: res.tenants->mapMap(Tenant.fromV1(defaultTenant, res))};
+  {
+    puburl: res.puburl,
+    tenants: res.tenants->mapMap(Tenant.fromV1(defaultTenant, res)),
+  };
 };
 
 let toV1 = (_v2: t): Resources.t => {
@@ -186,4 +192,5 @@ let toV1 = (_v2: t): Resources.t => {
   connections: None,
   repos: None,
   groups: None,
+  puburl: "",
 };

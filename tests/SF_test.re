@@ -124,7 +124,7 @@ describe("Test resources JSON parsing", () => {
     |> toEqual((1, 0));
   });
 
-  let raw = "resources.json"->read;
+  let raw = "resources.json"->read->Js.String.trim;
   let parsed = raw->parse(Resources.decode);
   test("parse resources object", () => {
     let isToolbox = (project: Project.t): bool => project.name == "toolbox";

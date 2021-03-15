@@ -76,5 +76,6 @@
       ],
       "description": "The ansible tenant."
     }
-  ]
+  ],
+  "puburl": "https://ansible.softwarefactory-project.io/manage"
 }
