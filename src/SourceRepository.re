@@ -45,6 +45,8 @@ type t = {
   connection: option(string),
   [@decco.key "zuul/include"]
   zuul_include: [@decco.codec eclasses_codec] eclasses,
+  [@decco.key "default-branch"]
+  default_branch: option(string),
 };
 
 // Unfortunately, a source-repository can be defined either by a name or it's type

@@ -3,7 +3,10 @@
     "acls": {
       "config-acl": {
         "file": "[access \"refs/*\"]\n  read = group config-core\n  owner = group config-ptl\n[access \"refs/heads/*\"]\n  label-Code-Review = -2..+2 group config-core\n  label-Code-Review = -2..+2 group config-ptl\n  label-Verified = -2..+2 group config-ptl\n  label-Workflow = -1..+1 group config-core\n  label-Workflow = -1..+1 group config-ptl\n  label-Workflow = -1..+0 group Registered Users\n  rebase = group config-core\n  abandon = group config-core\n  submit = group config-ptl\n  read = group config-core\n  read = group Registered Users\n[access \"refs/meta/config\"]\n  read = group config-core\n  read = group Registered Users\n[receive]\n  requireChangeId = true\n[submit]\n  mergeContent = false\n  action = fast forward only\n[plugin \"reviewers-by-blame\"]\n  maxReviewers = 5\n  ignoreDrafts = true\n  ignoreSubjectRegEx = (WIP|DNM)(.*)\n",
-        "groups": ["config-ptl", "config-core"],
+        "groups": [
+          "config-ptl",
+          "config-core"
+        ],
         "name": "config-acl"
       }
     },
@@ -22,7 +25,9 @@
       },
       "config-ptl": {
         "description": "Team lead for the config repo",
-        "members": ["admin@sftests.com"],
+        "members": [
+          "admin@sftests.com"
+        ],
         "name": "config-ptl"
       }
     },
@@ -32,12 +37,21 @@
         "tenant": "local",
         "name": "internal",
         "source-repositories": [
-          { "config": { "zuul/config-project": true } },
-          { "sf-jobs": {} },
+          {
+            "config": {
+              "zuul/config-project": true,
+              "default-branch": "main"
+            }
+          },
+          {
+            "sf-jobs": {}
+          },
           {
             "zuul-jobs": {
               "connection": "gerrit",
-              "zuul/include": ["job"],
+              "zuul/include": [
+                "job"
+              ],
               "zuul/shadow": "sf-jobs"
             }
           }

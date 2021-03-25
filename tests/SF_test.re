@@ -95,12 +95,14 @@ describe("Test resources JSON parsing", () => {
             name: "containers/toolbox",
             connection: Some("github.com"),
             zuul_include: Some([Job]),
+            default_branch: Some("main"),
           }),
           SourceRepository.Name("software-factory/cauth"),
           SourceRepository.Full({
             name: "software-factory/managesf",
             connection: None,
             zuul_include: None,
+            default_branch: None,
           }),
         ],
       };
