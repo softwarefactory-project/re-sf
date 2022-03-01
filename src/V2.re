@@ -27,7 +27,7 @@ module Connection = {
 
   let webUrl = (connection: t, project: string): string =>
     switch (connection) {
-    | Gerrit(url) => url ++ "/gitweb?p=" ++ project ++ ".git;a=tree"
+    | Gerrit(url) => url ++ "/r/plugins/gitiles/" ++ project ++ "/+/HEAD"
     | Pagure(url) => url ++ "/" ++ project ++ "/tree"
     | GitLab(url) => url ++ "/" ++ project
     | GitHub(url) => url ++ "/" ++ project
@@ -36,7 +36,7 @@ module Connection = {
 
   let commitUrl = (connection: t, project: string): string =>
     switch (connection) {
-    | Gerrit(url) => url ++ "/gitweb?p=" ++ project ++ ".git;a=shortlog"
+    | Gerrit(url) => url ++ "/r/plugins/gitiles/" ++ project ++ "/+log"
     | Pagure(url) => url ++ "/" ++ project ++ "/commits"
     | GitLab(url) => url ++ "/" ++ project ++ "/commits"
     | GitHub(url) => url ++ "/" ++ project ++ "/commits"

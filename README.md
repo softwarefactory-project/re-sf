@@ -22,6 +22,7 @@ Add to your `bsconfig.json`:
 ## Run re-sf tests
 
 ```bash
+yarn install
 yarn test
 ```
 
